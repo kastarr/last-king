@@ -1,0 +1,1241 @@
+<!doctype html>
+<html lang="en" data-scene="27">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="format-detection" content="telephone=no">
+  <title>Magnificent (@magnificent_og) • Instagram</title>
+  <link rel="icon" href="assets/monogram.svg" type="image/svg+xml">
+  <script>
+    /*
+     * Deterministic scene selection:
+     *   ?scene=27 -> profile and party grid (default)
+     *   ?scene=41 -> Club Extreme post detail
+     * The query parameter is removed after the state is captured so production
+     * controls never appear in the photographed address bar.
+     */
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var scene = params.get("scene") === "41" ? "41" : "27";
+      document.documentElement.dataset.scene = scene;
+      if (params.has("scene")) {
+        params.delete("scene");
+        var query = params.toString();
+        var clean = window.location.pathname + (query ? "?" + query : "") + window.location.hash;
+        try {
+          window.history.replaceState({ scene: scene }, "", clean);
+        } catch (error) {
+          /* file:// contexts can reject replaceState; the scene still renders. */
+        }
+      }
+    })();
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --blue: #0095f6;
+      --link: #00376b;
+      --ink: #000000;
+      --muted: #737373;
+      --line: #dbdbdb;
+      --line-soft: #efefef;
+      --surface: #ffffff;
+      --wash: #fafafa;
+      --avatar-size: clamp(84px, 23.2vw, 96px);
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      width: 100%;
+      background: var(--surface);
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      width: 100%;
+      margin: 0;
+      background: var(--surface);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    img, svg { display: block; }
+    img { max-width: 100%; }
+    button { font: inherit; color: inherit; }
+    p { margin: 0; }
+    ul { margin: 0; padding: 0; list-style: none; }
+
+    .app {
+      width: 100%;
+      max-width: 470px;
+      margin-inline: auto;
+      background: var(--surface);
+    }
+
+    .visually-hidden {
+      position: absolute !important;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .sprite {
+      position: absolute;
+      width: 0;
+      height: 0;
+      overflow: hidden;
+    }
+
+    .icon {
+      width: 24px;
+      height: 24px;
+      flex: 0 0 auto;
+    }
+
+    .wordmark {
+      font-family: "Snell Roundhand", "Apple Chancery", "Segoe Script", "Brush Script MT", cursive;
+      font-size: 32px;
+      font-style: italic;
+      font-weight: 700;
+      line-height: .95;
+      letter-spacing: -.045em;
+      white-space: nowrap;
+      transform: translateY(-1px);
+    }
+
+    /* ---------- Profile ---------- */
+
+    .view-profile {
+      padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px));
+      background: var(--surface);
+    }
+
+    .ig-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 56px;
+      padding: calc(env(safe-area-inset-top, 0px) + 7px) 16px 7px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--line-soft);
+    }
+
+    .topbar-auth {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      white-space: nowrap;
+    }
+
+    .auth-login {
+      color: var(--blue);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .auth-signup {
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: var(--blue);
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    .profile-header {
+      display: grid;
+      grid-template-columns: var(--avatar-size) minmax(0, 1fr);
+      align-items: center;
+      column-gap: 18px;
+      padding: 18px 16px 0;
+    }
+
+    .avatar-ring {
+      width: var(--avatar-size);
+      aspect-ratio: 1;
+      padding: 3px;
+      border-radius: 50%;
+      background: conic-gradient(from 210deg, #f7b733, #fc4a1a 22%, #d62976 48%, #962fbf 70%, #4f5bd5 86%, #f7b733);
+    }
+
+    .avatar-inner {
+      width: 100%;
+      height: 100%;
+      padding: 2px;
+      border-radius: 50%;
+      background: var(--surface);
+    }
+
+    .avatar-mark {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+    }
+
+    .profile-id {
+      min-width: 0;
+    }
+
+    .profile-id-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .handle {
+      min-width: 0;
+      overflow: hidden;
+      color: var(--ink);
+      font-size: clamp(17px, 4.6vw, 19px);
+      font-weight: 600;
+      line-height: 1.25;
+      letter-spacing: -.02em;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .verified {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 auto;
+    }
+
+    .profile-more {
+      width: 24px;
+      height: 24px;
+      margin-left: auto;
+      color: #262626;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      gap: 3px;
+      margin-top: 13px;
+    }
+
+    .stat {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .stat-number {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.25;
+      letter-spacing: -.01em;
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .profile-bio {
+      padding: 12px 16px 0;
+    }
+
+    .display-name {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+
+    .bio {
+      margin-top: 1px;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .profile-link {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      min-width: 0;
+      margin-top: 5px;
+      color: var(--link);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.35;
+    }
+
+    .profile-link .icon {
+      width: 14px;
+      height: 14px;
+    }
+
+    .profile-link span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .profile-actions {
+      display: flex;
+      gap: 8px;
+      padding: 14px 16px 0;
+    }
+
+    .profile-button {
+      display: flex;
+      min-height: 44px;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .profile-button.follow {
+      flex: 1;
+      border-color: var(--blue);
+      background: var(--blue);
+      color: #ffffff;
+      -webkit-text-fill-color: #ffffff;
+    }
+
+    .profile-button.message {
+      flex: 1;
+      border-color: var(--line);
+      color: var(--ink);
+      -webkit-text-fill-color: var(--ink);
+    }
+
+    .profile-button.add-person {
+      width: 44px;
+      flex: 0 0 44px;
+      padding: 0;
+      color: var(--ink);
+      -webkit-text-fill-color: var(--ink);
+    }
+
+    .add-person .icon {
+      width: 20px;
+      height: 20px;
+    }
+
+    button:disabled {
+      opacity: 1;
+      cursor: default;
+    }
+
+    .highlights {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 16px 16px 10px;
+      scrollbar-width: none;
+    }
+
+    .highlights::-webkit-scrollbar { display: none; }
+
+    .highlight {
+      flex: 0 0 66px;
+      text-align: center;
+      scroll-snap-align: start;
+    }
+
+    .highlight-ring {
+      display: block;
+      width: 62px;
+      height: 62px;
+      margin-inline: auto;
+      padding: 2px;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: var(--surface);
+    }
+
+    .highlight-ring img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .highlight-label {
+      display: block;
+      margin-top: 6px;
+      overflow: hidden;
+      color: var(--ink);
+      font-size: 10.5px;
+      line-height: 1.25;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .profile-tabs {
+      display: flex;
+      height: 48px;
+      border-top: 1px solid var(--line-soft);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .profile-tab {
+      position: relative;
+      display: grid;
+      flex: 1;
+      place-items: center;
+      color: #8e8e8e;
+    }
+
+    .profile-tab[aria-current="page"] { color: var(--ink); }
+
+    .profile-tab[aria-current="page"]::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -1px;
+      width: 64px;
+      height: 1px;
+      transform: translateX(-50%);
+      background: var(--ink);
+    }
+
+    .profile-tab .icon {
+      width: 24px;
+      height: 24px;
+    }
+
+    .post-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 2px;
+    }
+
+    .post-grid li { min-width: 0; }
+
+    .grid-post {
+      position: relative;
+      display: block;
+      width: 100%;
+      padding: 0;
+      overflow: hidden;
+      border: 0;
+      background: var(--line-soft);
+      line-height: 0;
+      cursor: pointer;
+    }
+
+    .grid-post img {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      transition: opacity 120ms ease-out;
+    }
+
+    .grid-post:focus-visible {
+      z-index: 2;
+      outline: 2px solid var(--blue);
+      outline-offset: -2px;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .grid-post:hover img { opacity: .92; }
+    }
+
+    .bottom-nav {
+      position: fixed;
+      inset-inline: 0;
+      bottom: 0;
+      z-index: 40;
+      display: flex;
+      width: 100%;
+      max-width: 470px;
+      height: calc(50px + env(safe-area-inset-bottom, 0px));
+      margin-inline: auto;
+      padding: 0 12px env(safe-area-inset-bottom, 0px);
+      align-items: center;
+      justify-content: space-around;
+      border-top: 1px solid var(--line-soft);
+      background: var(--surface);
+      pointer-events: none;
+    }
+
+    .bottom-nav .icon {
+      width: 25px;
+      height: 25px;
+      color: #000000;
+    }
+
+    /* ---------- Post detail ---------- */
+
+    .view-post {
+      display: none;
+      min-height: 100svh;
+      padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px));
+      background: var(--surface);
+    }
+
+    html[data-scene="41"] .view-profile { display: none; }
+    html[data-scene="41"] .view-post { display: block; }
+
+    .post-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      min-height: 52px;
+      padding: calc(env(safe-area-inset-top, 0px) + 4px) 8px 4px;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 1px solid var(--line-soft);
+      background: var(--surface);
+    }
+
+    .post-topbar .wordmark {
+      justify-self: center;
+      font-size: 26px;
+    }
+
+    .post-back {
+      display: flex;
+      min-width: 44px;
+      min-height: 44px;
+      padding: 0 8px;
+      align-items: center;
+      gap: 1px;
+      justify-self: start;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: #262626;
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .post-back .icon {
+      width: 24px;
+      height: 24px;
+    }
+
+    .post-back:focus-visible {
+      outline: 2px solid var(--blue);
+      outline-offset: 2px;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .post-back:hover { background: var(--wash); }
+    }
+
+    .post-topbar-spacer {
+      width: 44px;
+      justify-self: end;
+    }
+
+    .post {
+      background: var(--surface);
+    }
+
+    .post-head {
+      display: flex;
+      min-height: 56px;
+      padding: 10px 16px;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .post-avatar {
+      width: 36px;
+      height: 36px;
+      flex: 0 0 36px;
+      overflow: hidden;
+      border-radius: 50%;
+      background: #050505;
+    }
+
+    .post-avatar .mark {
+      width: 100%;
+      height: 100%;
+    }
+
+    .post-head-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .post-handle {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    .post-handle .verified {
+      width: 14px;
+      height: 14px;
+    }
+
+    .post-location {
+      margin-top: 1px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .post-location[hidden] { display: none; }
+
+    .post-more {
+      width: 24px;
+      height: 24px;
+      flex: 0 0 auto;
+      color: #262626;
+    }
+
+    .post-media {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      background: var(--line-soft);
+    }
+
+    .post-media.is-wide {
+      aspect-ratio: 852 / 436;
+    }
+
+    .post-actions {
+      display: flex;
+      padding: 4px 8px;
+      align-items: center;
+    }
+
+    .post-action {
+      display: grid;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      place-items: center;
+      border: 0;
+      background: transparent;
+      color: #262626;
+    }
+
+    .post-action .icon {
+      width: 24px;
+      height: 24px;
+    }
+
+    .post-save { margin-left: auto; }
+
+    .post-likes {
+      margin: 2px 16px 0;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    .post-caption {
+      margin: 4px 16px 0;
+      overflow-wrap: anywhere;
+      font-size: 14px;
+      line-height: 1.43;
+    }
+
+    .post-author { font-weight: 600; }
+
+    .mention {
+      color: var(--link);
+      font-weight: 500;
+    }
+
+    .post-comments {
+      margin: 5px 16px 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .post-time {
+      margin: 5px 16px 0;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    [hidden] { display: none !important; }
+
+    @media (min-width: 600px) {
+      .app {
+        max-width: 470px;
+        border-inline: 1px solid var(--line-soft);
+      }
+      .bottom-nav { border-inline: 1px solid var(--line-soft); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0s !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <svg class="sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="markGold" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#F8D57A"/>
+        <stop offset=".48" stop-color="#D9A43C"/>
+        <stop offset="1" stop-color="#9A6A1F"/>
+      </linearGradient>
+
+      <symbol id="i-mark" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="50" fill="#050505"/>
+        <g fill="url(#markGold)">
+          <path d="M31 31 27 18l12 6 11-10 11 10 12-6-4 13z"/>
+          <path d="M31 34h38v4H31z"/>
+          <path d="M16 86V43h13l21 25 21-25h13v43H69V63L50 85 31 63v23z"/>
+        </g>
+      </symbol>
+
+      <symbol id="i-verified" viewBox="0 0 24 24">
+        <path fill="#0095F6" d="M12 1.7l2.4 1.9 3-.2 1 2.8 2.8 1.3-.5 3 2 2.3-1.8 2.4.5 3-2.8 1.2-1.3 2.8-3-.6-2.3 2-2.4-1.8-3 .5-1.2-2.8-2.8-1.3.6-3-2-2.3 1.8-2.4-.5-3 2.8-1.2L7 4.6l3 .6z"/>
+        <path fill="#ffffff" d="M10.6 16.3l-3-3 1.4-1.4 1.6 1.6 4.2-4.2 1.4 1.4z"/>
+      </symbol>
+
+      <symbol id="i-more" viewBox="0 0 24 24">
+        <g fill="currentColor">
+          <circle cx="5" cy="12" r="1.7"/>
+          <circle cx="12" cy="12" r="1.7"/>
+          <circle cx="19" cy="12" r="1.7"/>
+        </g>
+      </symbol>
+
+      <symbol id="i-link" viewBox="0 0 24 24">
+        <g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 13.2a4.7 4.7 0 0 0 6.6 0l2.7-2.7a4.7 4.7 0 0 0-6.6-6.6l-1.3 1.3"/>
+          <path d="M14 10.8a4.7 4.7 0 0 0-6.6 0l-2.7 2.7a4.7 4.7 0 0 0 6.6 6.6l1.3-1.3"/>
+        </g>
+      </symbol>
+
+      <symbol id="i-add-person" viewBox="0 0 24 24">
+        <g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9.5" cy="8" r="3.4"/>
+          <path d="M3 20.5c.5-3.8 3.1-5.8 6.5-5.8s6 2 6.5 5.8"/>
+          <path d="M19 7.5v6M16 10.5h6"/>
+        </g>
+      </symbol>
+
+      <symbol id="i-grid" viewBox="0 0 24 24">
+        <g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round">
+          <rect x="3.2" y="3.2" width="17.6" height="17.6" rx="1.4"/>
+          <path d="M9.1 3.2v17.6M14.9 3.2v17.6M3.2 9.1h17.6M3.2 14.9h17.6"/>
+        </g>
+      </symbol>
+
+      <symbol id="i-reels" viewBox="0 0 24 24">
+        <g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="4.2"/>
+          <path d="M3.2 8.2h17.6M8.2 8.2l-2.3-4M14 8.2l-2.3-4"/>
+          <path d="M10.2 12.1l4.6 2.6-4.6 2.6z" fill="currentColor" stroke="none"/>
+        </g>
+      </symbol>
+
+      <symbol id="i-tagged" viewBox="0 0 24 24">
+        <g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="4.2"/>
+          <circle cx="12" cy="10" r="2.3"/>
+          <path d="M7.3 18.5c.8-2.6 2.7-3.9 4.7-3.9s3.9 1.3 4.7 3.9"/>
+        </g>
+      </symbol>
+
+      <symbol id="i-heart" viewBox="0 0 24 24">
+        <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M20.8 4.7a5.4 5.4 0 0 0-7.7 0L12 5.8l-1.1-1.1a5.4 5.4 0 0 0-7.7 7.6l1.1 1.1L12 21l7.7-7.6 1.1-1.1a5.4 5.4 0 0 0 0-7.6z"/>
+      </symbol>
+
+      <symbol id="i-comment" viewBox="0 0 24 24">
+        <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5H6l-3 2V11.5a8.5 8.5 0 0 1 8.5-8.5h1a8.5 8.5 0 0 1 8.5 8.5z"/>
+      </symbol>
+
+      <symbol id="i-share" viewBox="0 0 24 24">
+        <g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 2L11 13"/>
+          <path d="M22 2l-7 20-4-9-9-4z"/>
+        </g>
+      </symbol>
+
+      <symbol id="i-bookmark" viewBox="0 0 24 24">
+        <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M6 3.2h12v18l-6-4.2-6 4.2z"/>
+      </symbol>
+
+      <symbol id="i-home" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M3 10.4L12 2.7l9 7.7V21a1.1 1.1 0 0 1-1.1 1.1H14v-7.3H10v7.3H4.1A1.1 1.1 0 0 1 3 21z"/>
+      </symbol>
+
+      <symbol id="i-search" viewBox="0 0 24 24">
+        <g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <circle cx="10.8" cy="10.8" r="7.2"/>
+          <path d="M16.2 16.2L21 21"/>
+        </g>
+      </symbol>
+
+      <symbol id="i-create" viewBox="0 0 24 24">
+        <g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="5"/>
+          <path d="M12 8v8M8 12h8"/>
+        </g>
+      </symbol>
+
+      <symbol id="i-nav-reels" viewBox="0 0 24 24">
+        <g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="4.2"/>
+          <path d="M3.2 8.2h17.6M8.2 8.2l-2.3-4M14 8.2l-2.3-4"/>
+          <path d="M10.2 12.1l4.6 2.6-4.6 2.6z" fill="currentColor" stroke="none"/>
+        </g>
+      </symbol>
+
+      <symbol id="i-profile" viewBox="0 0 24 24">
+        <g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="8" r="3.8"/>
+          <path d="M4.2 21c.4-4.1 3.6-6.4 7.8-6.4s7.4 2.3 7.8 6.4"/>
+        </g>
+      </symbol>
+
+      <symbol id="i-chevron-left" viewBox="0 0 24 24">
+        <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M15 4.5L7.5 12l7.5 7.5"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <div class="app">
+    <main>
+      <section class="view-profile" data-view="profile" aria-label="Magnificent on Instagram">
+        <h1 class="visually-hidden">Magnificent on Instagram</h1>
+
+        <header class="ig-topbar">
+          <span class="wordmark" aria-hidden="true">Instagram</span>
+          <span class="topbar-auth" aria-hidden="true">
+            <span class="auth-login">Log in</span>
+            <span class="auth-signup">Sign up</span>
+          </span>
+        </header>
+
+        <div class="profile-header">
+          <div class="avatar-ring" aria-hidden="true">
+            <div class="avatar-inner">
+              <svg class="avatar-mark" viewBox="0 0 100 100"><use href="#i-mark"/></svg>
+            </div>
+          </div>
+
+          <div class="profile-id">
+            <div class="profile-id-row">
+              <span class="handle">magnificent_og</span>
+              <svg class="verified" viewBox="0 0 24 24" role="img" aria-label="Verified"><use href="#i-verified"/></svg>
+              <svg class="profile-more" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-more"/></svg>
+            </div>
+            <div class="stats" aria-label="Profile statistics">
+              <div class="stat"><span class="stat-number">946</span><span class="stat-label">posts</span></div>
+              <div class="stat"><span class="stat-number">712K</span><span class="stat-label">followers</span></div>
+              <div class="stat"><span class="stat-number">428</span><span class="stat-label">following</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="profile-bio">
+          <p class="display-name">Magnificent</p>
+          <p class="bio">Dream Bigger. Party Harder.</p>
+          <p class="profile-link">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-link"/></svg>
+            <span>linktr.ee/magnificent_og</span>
+          </p>
+        </div>
+
+        <div class="profile-actions">
+          <button class="profile-button follow" type="button" disabled>Follow</button>
+          <button class="profile-button message" type="button" disabled>Message</button>
+          <button class="profile-button add-person" type="button" aria-label="Add person" disabled>
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-add-person"/></svg>
+          </button>
+        </div>
+
+        <ul class="highlights" aria-label="Story highlights">
+          <li class="highlight">
+            <span class="highlight-ring"><img src="assets/highlight-anniversary.jpg" alt="" width="116" height="116" decoding="async"></span>
+            <span class="highlight-label">Anniversary</span>
+          </li>
+          <li class="highlight">
+            <span class="highlight-ring"><img src="assets/highlight-lagos-nights.jpg" alt="" width="116" height="116" decoding="async"></span>
+            <span class="highlight-label">Lagos Nights</span>
+          </li>
+          <li class="highlight">
+            <span class="highlight-ring"><img src="assets/highlight-the-lifestyle.jpg" alt="" width="116" height="116" decoding="async"></span>
+            <span class="highlight-label">The Lifestyle</span>
+          </li>
+          <li class="highlight">
+            <span class="highlight-ring"><img src="assets/highlight-events.jpg" alt="" width="116" height="116" decoding="async"></span>
+            <span class="highlight-label">Events</span>
+          </li>
+          <li class="highlight">
+            <span class="highlight-ring"><img src="assets/highlight-merch.jpg" alt="" width="116" height="116" decoding="async"></span>
+            <span class="highlight-label">Merch</span>
+          </li>
+        </ul>
+
+        <nav class="profile-tabs" aria-label="Profile sections">
+          <span class="profile-tab" aria-current="page">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-grid"/></svg>
+            <span class="visually-hidden">Posts</span>
+          </span>
+          <span class="profile-tab">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-reels"/></svg>
+            <span class="visually-hidden">Reels</span>
+          </span>
+          <span class="profile-tab">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tagged"/></svg>
+            <span class="visually-hidden">Tagged</span>
+          </span>
+        </nav>
+
+        <ul class="post-grid" aria-label="Magnificent's posts">
+          <li>
+            <button class="grid-post" type="button" data-post-id="club-extreme" aria-label="Open post: Magnificent at the club">
+              <img src="assets/party-01.jpg" alt="" width="284" height="268" decoding="async">
+            </button>
+          </li>
+          <li>
+            <button class="grid-post" type="button" data-post-id="party-02" aria-label="Open post: three women in a blue-lit club">
+              <img src="assets/party-02.jpg" alt="" width="280" height="268" decoding="async">
+            </button>
+          </li>
+          <li>
+            <button class="grid-post" type="button" data-post-id="party-03" aria-label="Open post: a man in a white shirt at the club">
+              <img src="assets/party-03.jpg" alt="" width="283" height="268" decoding="async">
+            </button>
+          </li>
+          <li>
+            <button class="grid-post" type="button" data-post-id="party-04" aria-label="Open post: a woman dancing in a green dress">
+              <img src="assets/party-04.jpg" alt="" width="284" height="262" decoding="async">
+            </button>
+          </li>
+          <li>
+            <button class="grid-post" type="button" data-post-id="party-05" aria-label="Open post: the gold M above the club floor">
+              <img src="assets/party-05.jpg" alt="" width="280" height="262" decoding="async">
+            </button>
+          </li>
+          <li>
+            <button class="grid-post" type="button" data-post-id="party-06" aria-label="Open post: two women in black and red dresses">
+              <img src="assets/party-06.jpg" alt="" width="283" height="262" decoding="async">
+            </button>
+          </li>
+          <li>
+            <button class="grid-post" type="button" data-post-id="party-07" aria-label="Open post: friends with red cups at the club">
+              <img src="assets/party-07.jpg" alt="" width="284" height="184" decoding="async">
+            </button>
+          </li>
+          <li>
+            <button class="grid-post" type="button" data-post-id="party-08" aria-label="Open post: a woman dancing under blue lights">
+              <img src="assets/party-08.jpg" alt="" width="280" height="184" decoding="async">
+            </button>
+          </li>
+          <li>
+            <button class="grid-post" type="button" data-post-id="party-09" aria-label="Open post: the crowd under the stage lights">
+              <img src="assets/party-09.jpg" alt="" width="283" height="184" decoding="async">
+            </button>
+          </li>
+        </ul>
+
+        <div class="bottom-nav" aria-hidden="true">
+          <svg class="icon" viewBox="0 0 24 24"><use href="#i-home"/></svg>
+          <svg class="icon" viewBox="0 0 24 24"><use href="#i-search"/></svg>
+          <svg class="icon" viewBox="0 0 24 24"><use href="#i-create"/></svg>
+          <svg class="icon" viewBox="0 0 24 24"><use href="#i-nav-reels"/></svg>
+          <svg class="icon" viewBox="0 0 24 24"><use href="#i-profile"/></svg>
+        </div>
+      </section>
+
+      <section class="view-post" data-view="post" aria-label="Magnificent's post">
+        <h1 class="visually-hidden">Magnificent's post</h1>
+        <header class="post-topbar">
+          <button class="post-back" id="post-back" type="button" aria-label="Back to Magnificent's profile">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chevron-left"/></svg>
+            <span>Back</span>
+          </button>
+          <span class="wordmark" aria-hidden="true">Instagram</span>
+          <span class="post-topbar-spacer" aria-hidden="true"></span>
+        </header>
+
+        <div id="post-host"></div>
+      </section>
+    </main>
+  </div>
+
+  <template id="post-template">
+    <article class="post">
+      <header class="post-head">
+        <span class="post-avatar" aria-hidden="true">
+          <svg class="mark" viewBox="0 0 100 100"><use href="#i-mark"/></svg>
+        </span>
+        <div class="post-head-copy">
+          <p class="post-handle">
+            <span>magnificent_og</span>
+            <svg class="verified" viewBox="0 0 24 24" role="img" aria-label="Verified"><use href="#i-verified"/></svg>
+          </p>
+          <p class="post-location"></p>
+        </div>
+        <svg class="post-more" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-more"/></svg>
+      </header>
+
+      <img class="post-media" alt="" width="852" height="436" decoding="async">
+
+      <div class="post-actions" role="group" aria-label="Post actions">
+        <button class="post-action" type="button" aria-label="Like" disabled>
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-heart"/></svg>
+        </button>
+        <button class="post-action" type="button" aria-label="Comment" disabled>
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-comment"/></svg>
+        </button>
+        <button class="post-action" type="button" aria-label="Share" disabled>
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-share"/></svg>
+        </button>
+        <button class="post-action post-save" type="button" aria-label="Save" disabled>
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-bookmark"/></svg>
+        </button>
+      </div>
+
+      <p class="post-likes"><strong></strong></p>
+      <p class="post-caption">
+        <span class="post-author">magnificent_og</span>
+        <span class="post-caption-text"></span>
+      </p>
+      <p class="post-comments"><span></span></p>
+      <p class="post-time"><time></time></p>
+    </article>
+  </template>
+
+  <p class="visually-hidden" id="scene-status" role="status" aria-live="polite"></p>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var root = document.documentElement;
+      var postHost = document.getElementById("post-host");
+      var postTemplate = document.getElementById("post-template");
+      var backButton = document.getElementById("post-back");
+      var status = document.getElementById("scene-status");
+      var gridButtons = Array.prototype.slice.call(document.querySelectorAll(".grid-post"));
+      var lastTrigger = null;
+
+      var POSTS = {
+        "club-extreme": {
+          image: "assets/club-extreme.jpg",
+          width: 852,
+          height: 436,
+          wide: true,
+          alt: "Magnificent in sunglasses raises a hand while holding a red cup in a crowded club, with a neon EXTREME sign behind him.",
+          location: "Club Extreme, Lagos",
+          likes: "128,754 likes",
+          comments: "View all 3,726 comments",
+          time: "2 days ago",
+          caption: "This week in honour of our fifth anniversary we do it every night at @ClubExtremeLagos"
+        },
+        "party-02": {
+          image: "assets/party-02.jpg",
+          width: 280,
+          height: 268,
+          alt: "Three women in sunglasses pose together in a blue-lit club."
+        },
+        "party-03": {
+          image: "assets/party-03.jpg",
+          width: 283,
+          height: 268,
+          alt: "A man in a white shirt smiles in a club lounge."
+        },
+        "party-04": {
+          image: "assets/party-04.jpg",
+          width: 284,
+          height: 262,
+          alt: "A woman in a green dress dances in a crowded club."
+        },
+        "party-05": {
+          image: "assets/party-05.jpg",
+          width: 280,
+          height: 262,
+          alt: "A gold M monogram glows above a club table."
+        },
+        "party-06": {
+          image: "assets/party-06.jpg",
+          width: 283,
+          height: 262,
+          alt: "Two women in black and red dresses pose in a club."
+        },
+        "party-07": {
+          image: "assets/party-07.jpg",
+          width: 284,
+          height: 184,
+          alt: "Three friends hold red cups together at a club table."
+        },
+        "party-08": {
+          image: "assets/party-08.jpg",
+          width: 280,
+          height: 184,
+          alt: "A woman in a black halter dress dances under blue club lights."
+        },
+        "party-09": {
+          image: "assets/party-09.jpg",
+          width: 283,
+          height: 184,
+          alt: "A club crowd raises their hands toward the stage lights."
+        }
+      };
+
+      function captionNode(text) {
+        var fragment = document.createDocumentFragment();
+        var pieces = text.split(/(@ClubExtremeLagos)/g);
+        pieces.forEach(function (piece) {
+          if (!piece) return;
+          if (piece === "@ClubExtremeLagos") {
+            var mention = document.createElement("span");
+            mention.className = "mention";
+            mention.textContent = piece;
+            fragment.appendChild(mention);
+          } else {
+            fragment.appendChild(document.createTextNode(piece));
+          }
+        });
+        return fragment;
+      }
+
+      function buildPost(post) {
+        var node = postTemplate.content.firstElementChild.cloneNode(true);
+        var image = node.querySelector(".post-media");
+        image.src = post.image;
+        image.alt = post.alt;
+        image.width = post.width;
+        image.height = post.height;
+        if (post.wide) image.classList.add("is-wide");
+
+        var location = node.querySelector(".post-location");
+        if (post.location) {
+          location.textContent = post.location;
+        } else {
+          location.hidden = true;
+        }
+
+        var likes = node.querySelector(".post-likes");
+        if (post.likes) {
+          likes.querySelector("strong").textContent = post.likes;
+        } else {
+          likes.hidden = true;
+        }
+
+        var caption = node.querySelector(".post-caption");
+        if (post.caption) {
+          caption.querySelector(".post-caption-text").appendChild(captionNode(post.caption));
+        } else {
+          caption.hidden = true;
+        }
+
+        var comments = node.querySelector(".post-comments");
+        if (post.comments) {
+          comments.querySelector("span").textContent = post.comments;
+        } else {
+          comments.hidden = true;
+        }
+
+        var time = node.querySelector(".post-time");
+        if (post.time) {
+          time.querySelector("time").textContent = post.time;
+        } else {
+          time.hidden = true;
+        }
+
+        return node;
+      }
+
+      function renderPost(post) {
+        var fragment = document.createDocumentFragment();
+        fragment.appendChild(buildPost(post));
+        postHost.replaceChildren(fragment);
+      }
+
+      function openPost(id, trigger, options) {
+        var post = POSTS[id];
+        if (!post) return;
+        lastTrigger = trigger || lastTrigger;
+        renderPost(post);
+        root.dataset.scene = "41";
+        if (status) status.textContent = "Showing Magnificent's post.";
+        window.scrollTo(0, 0);
+        if (!options || options.focus !== false) {
+          window.requestAnimationFrame(function () {
+            backButton.focus({ preventScroll: true });
+          });
+        }
+      }
+
+      function closePost(options) {
+        if (root.dataset.scene !== "41") return;
+        root.dataset.scene = "27";
+        postHost.replaceChildren();
+        if (status) status.textContent = "Showing Magnificent's profile.";
+        var target = lastTrigger || gridButtons[0];
+        window.scrollTo(0, 0);
+        if (!options || options.focus !== false) {
+          window.requestAnimationFrame(function () {
+            if (target) target.focus();
+          });
+        }
+      }
+
+      gridButtons.forEach(function (button) {
+        button.addEventListener("click", function () {
+          openPost(button.getAttribute("data-post-id"), button);
+        });
+      });
+
+      backButton.addEventListener("click", function () {
+        closePost();
+      });
+
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape" && root.dataset.scene === "41") {
+          event.preventDefault();
+          closePost();
+        }
+      });
+
+      if (root.dataset.scene === "41") {
+        openPost("club-extreme", null, { focus: false });
+      } else {
+        if (status) status.textContent = "Showing Magnificent's profile.";
+      }
+    })();
+  </script>
+</body>
+</html>

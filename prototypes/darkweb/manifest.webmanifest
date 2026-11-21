@@ -1,0 +1,10 @@
+{
+  "name": "The Last King — Identity",
+  "short_name": "Identity",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#052844",
+  "theme_color": "#052844"
+}

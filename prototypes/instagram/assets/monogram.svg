@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Magnificent gold crown M mark">
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F8D57A"/>
+      <stop offset=".48" stop-color="#D9A43C"/>
+      <stop offset="1" stop-color="#9A6A1F"/>
+    </linearGradient>
+  </defs>
+  <circle cx="50" cy="50" r="50" fill="#050505"/>
+  <g fill="url(#gold)">
+    <path d="M31 31 27 18l12 6 11-10 11 10 12-6-4 13z"/>
+    <path d="M31 34h38v4H31z"/>
+    <path d="M16 86V43h13l21 25 21-25h13v43H69V63L50 85 31 63v23z"/>
+  </g>
+</svg>

@@ -1,0 +1,1786 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Identity">
+  <meta name="theme-color" content="#052844">
+  <link rel="manifest" href="manifest.webmanifest">
+  <title>Identity documents</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --ground: #052844;
+      --surface: #0a3551;
+      --line: rgba(215, 232, 236, .2);
+      --bone: #edf0e9;
+      --muted: #a9c0c7;
+      --teal: #82b9b8;
+      --steel: #b9c8ce;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; background: var(--ground); }
+    html, body { overscroll-behavior: none; }
+    body {
+      color: var(--bone);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-text-size-adjust: 100%;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      touch-action: manipulation;
+    }
+
+    #app {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100svh;
+      height: 100dvh;
+      padding: calc(10px + env(safe-area-inset-top, 0px)) 20px calc(12px + env(safe-area-inset-bottom, 0px));
+      overflow: hidden;
+      background:
+        radial-gradient(110% 55% at 100% 0%, rgba(89, 153, 163, .16), transparent 72%),
+        var(--ground);
+    }
+
+    .screen {
+      display: none;
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      overscroll-behavior: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .screen.active { display: block; }
+
+    .masthead {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 42px;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 12ch;
+      margin: 24px 0 7px;
+      color: var(--bone);
+      font-size: clamp(30px, 8vw, 38px);
+      line-height: 1.02;
+      letter-spacing: -.045em;
+    }
+    .subtitle {
+      margin: 0;
+      color: var(--teal);
+      font-size: 13px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .section-label {
+      margin: 27px 0 8px;
+      padding-bottom: 7px;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .columns, .tier-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: baseline;
+      gap: 12px;
+    }
+    .columns {
+      padding: 0 2px 5px;
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .tier {
+      padding: 12px 2px;
+      border-bottom: 1px solid var(--line);
+    }
+    .tier-name {
+      color: var(--steel);
+      font-size: 13px;
+      letter-spacing: .08em;
+    }
+    .tier-price {
+      color: var(--bone);
+      font-variant-numeric: tabular-nums;
+      font-size: 17px;
+      white-space: nowrap;
+    }
+    .tier p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+    .delivery {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 17px;
+      padding: 10px 2px;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .delivery span:last-child { color: var(--bone); }
+
+    .mirror {
+      margin: 18px 0 3px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.55;
+    }
+    .mirror-label {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--teal);
+      font-size: 11px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .mirror-address {
+      display: block;
+      color: var(--bone);
+      font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      font-size: 14px;
+      line-height: 1.65;
+      overflow-wrap: anywhere;
+      letter-spacing: .015em;
+    }
+
+    .scene-nav {
+      display: flex;
+      gap: 10px;
+      margin: 18px 0 8px;
+    }
+    button {
+      min-height: 44px;
+      padding: 10px 13px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .045);
+      color: var(--bone);
+      font: inherit;
+      font-size: 12px;
+      text-align: left;
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    button:active { background: rgba(130, 185, 184, .2); }
+
+    .social-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 44px;
+      border-bottom: 1px solid var(--line);
+      font-size: 17px;
+      font-weight: 650;
+    }
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 22px 0 14px;
+    }
+    .avatar {
+      width: 68px;
+      height: 68px;
+      flex: 0 0 auto;
+      border: 1px solid rgba(237, 240, 233, .55);
+      border-radius: 50%;
+      background: radial-gradient(circle at 70% 28%, #d0b28b 0 8%, transparent 9%), linear-gradient(145deg, #315a68, #172e3b 62%, #879b9d);
+    }
+    .profile-copy { font-size: 12px; line-height: 1.55; }
+    .profile-copy strong { display: block; color: var(--bone); font-size: 14px; }
+    .posts {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3px;
+      margin-top: 10px;
+    }
+    .post {
+      aspect-ratio: 1;
+      background:
+        linear-gradient(160deg, transparent 35%, rgba(0, 0, 0, .5)),
+        linear-gradient(35deg, #234250, #7a695e 45%, #c3ad8c);
+    }
+    .post:nth-child(3n + 2) { background: linear-gradient(155deg, #c2a777, #473b3b 55%, #142d3b); }
+    .post:nth-child(3n) { background: linear-gradient(25deg, #152c39, #92775e 53%, #d4c2a2); }
+
+    /*
+     * Bartholomew Foundation
+     * A separate, light institutional page. Tokens are scoped to this
+     * screen so the market and Instagram scenes keep their dark treatment.
+     */
+    #app.foundation-open {
+      padding: 0;
+      background: #f2f3ef;
+    }
+
+    .foundation {
+      --f-paper: #f2f3ef;
+      --f-ink: #16262c;
+      --f-muted: #51646a;
+      --f-blue: #143b50;
+      --f-blue-ink: #1e5069;
+      --f-wash: #e4ebea;
+      --f-rule: #d3dcd7;
+      --f-white: #ffffff;
+      color-scheme: light;
+      background: var(--f-paper);
+      color: var(--f-ink);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+
+    .foundation-shell {
+      width: 100%;
+      max-width: 1240px;
+      margin-inline: auto;
+      padding-inline: clamp(20px, 5vw, 48px);
+    }
+
+    .foundation-masthead {
+      padding-top: calc(10px + env(safe-area-inset-top, 0px));
+      background: var(--f-blue);
+      color: var(--f-white);
+    }
+    .foundation-masthead .foundation-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 16px;
+      min-height: 64px;
+      padding-block: 12px;
+    }
+    .foundation-identity { min-width: 0; }
+    .foundation-name {
+      margin: 0;
+      color: var(--f-white);
+      font-size: clamp(1.0625rem, 1.8vw, 1.25rem);
+      font-weight: 650;
+      line-height: 1.2;
+      letter-spacing: -.01em;
+    }
+    .foundation-sign {
+      margin: 3px 0 0;
+      color: #bfd0d5;
+      font-size: .75rem;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    .foundation-back {
+      min-width: 44px;
+      min-height: 44px;
+      padding: 8px 14px;
+      border: 1px solid rgba(255, 255, 255, .48);
+      border-radius: 4px;
+      background: transparent;
+      color: var(--f-white);
+      font-size: .875rem;
+      font-weight: 600;
+      line-height: 1;
+      text-align: center;
+      cursor: pointer;
+      transition: background-color 150ms ease-out, border-color 150ms ease-out;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .foundation-back:hover {
+        border-color: var(--f-white);
+        background: rgba(255, 255, 255, .1);
+      }
+    }
+    .foundation-back:active { background: rgba(255, 255, 255, .16); }
+
+    .foundation-hero {
+      display: grid;
+      gap: 24px;
+      padding-block: clamp(28px, 5vw, 56px) 0;
+    }
+    .foundation-hero-copy { min-width: 0; }
+    .foundation h1 {
+      max-width: 13ch;
+      margin: 0;
+      color: var(--f-ink);
+      font-size: clamp(2.75rem, 8vw, 4.25rem);
+      font-weight: 650;
+      line-height: .98;
+      letter-spacing: -.035em;
+      text-wrap: balance;
+    }
+    .foundation-hero-media {
+      margin: 0;
+      overflow: hidden;
+      border-radius: 4px;
+      background: var(--f-wash);
+      aspect-ratio: 4 / 3;
+    }
+    .foundation-hero-media img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 45% 50%;
+    }
+
+    .foundation-details {
+      display: grid;
+      gap: 32px;
+      margin-top: clamp(32px, 5vw, 56px);
+      padding-top: clamp(28px, 4vw, 40px);
+      border-top: 1px solid var(--f-rule);
+    }
+    .foundation-section-title {
+      margin: 0 0 8px;
+      color: var(--f-blue-ink);
+      font-size: .8125rem;
+      font-weight: 650;
+      line-height: 1.4;
+      letter-spacing: .015em;
+    }
+    .foundation-trades {
+      margin: 0;
+      padding: 0;
+      border-top: 1px solid var(--f-rule);
+      list-style: none;
+    }
+    .foundation-trades li {
+      padding: 15px 0;
+      border-bottom: 1px solid var(--f-rule);
+      color: var(--f-ink);
+      font-size: clamp(1.125rem, 2.2vw, 1.375rem);
+      font-weight: 550;
+      line-height: 1.35;
+    }
+    .foundation-terms {
+      align-self: start;
+      padding: clamp(20px, 3vw, 28px);
+      border: 1px solid var(--f-rule);
+      border-radius: 4px;
+      background: var(--f-wash);
+    }
+    .foundation-terms .foundation-section-title {
+      margin-bottom: 12px;
+      color: var(--f-blue);
+    }
+    .foundation-terms-line {
+      margin: 0;
+      color: var(--f-blue);
+      font-size: clamp(1.375rem, 2.8vw, 1.875rem);
+      font-weight: 650;
+      line-height: 1.25;
+      letter-spacing: -.015em;
+      text-wrap: balance;
+    }
+
+    .foundation-close {
+      display: grid;
+      gap: 24px;
+      margin-top: clamp(40px, 6vw, 64px);
+      padding-top: clamp(28px, 4vw, 40px);
+      border-top: 1px solid var(--f-rule);
+    }
+    .foundation-statement {
+      max-width: 30ch;
+      margin: 0;
+      color: var(--f-blue);
+      font-size: clamp(1.5rem, 3.4vw, 2.25rem);
+      font-weight: 550;
+      line-height: 1.22;
+      letter-spacing: -.015em;
+      text-wrap: balance;
+    }
+    .foundation-apply {
+      width: 100%;
+      max-width: 22rem;
+      min-height: 52px;
+      padding: 14px 24px;
+      border: 1px solid var(--f-blue);
+      border-radius: 4px;
+      background: var(--f-blue);
+      color: var(--f-white);
+      font-size: 1rem;
+      font-weight: 650;
+      line-height: 1.2;
+      text-align: center;
+      cursor: pointer;
+      transition: background-color 150ms ease-out, border-color 150ms ease-out, transform 100ms ease-out;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .foundation-apply:hover {
+        border-color: #0e2d3e;
+        background: #0e2d3e;
+      }
+    }
+    .foundation-apply:active {
+      border-color: #0a2432;
+      background: #0a2432;
+      transform: translateY(1px);
+    }
+
+    .foundation-footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 8px 24px;
+      margin-top: clamp(48px, 7vw, 72px);
+      padding-block: 20px calc(20px + env(safe-area-inset-bottom, 0px));
+      border-top: 1px solid var(--f-rule);
+      color: var(--f-muted);
+      font-size: .75rem;
+      line-height: 1.5;
+    }
+    .foundation-footer p { margin: 0; }
+
+    .foundation-back:focus-visible {
+      outline: 3px solid var(--f-white);
+      outline-offset: 3px;
+      box-shadow: 0 0 0 5px var(--f-blue);
+    }
+    .foundation-apply:focus-visible {
+      outline: 3px solid var(--f-blue);
+      outline-offset: 3px;
+      box-shadow: 0 0 0 3px var(--f-white);
+    }
+
+    @media (min-width: 600px) {
+      .foundation-hero-media { aspect-ratio: 16 / 9; }
+    }
+    @media (min-width: 900px) {
+      .foundation-hero {
+        grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+        align-items: end;
+        gap: clamp(32px, 5vw, 64px);
+      }
+      .foundation-hero-copy { padding-bottom: 4px; }
+      .foundation-hero-media { aspect-ratio: 3 / 2; }
+      .foundation-details {
+        grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+        gap: clamp(32px, 5vw, 64px);
+      }
+      .foundation-close {
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: end;
+        gap: 48px;
+      }
+      .foundation-apply {
+        width: auto;
+        max-width: none;
+        min-width: 200px;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .foundation-back,
+      .foundation-apply { transition: none; }
+      .foundation-apply:active { transform: none; }
+    }
+
+
+  </style>
+  <style>
+    /*
+     * Dark storefront (Scenes 27 / 41)
+     * New rules are namespaced to #market or .market-*. Shared :root tokens,
+     * the Instagram screen, and the Foundation screen are deliberately untouched.
+     */
+    #app:has(#market.active) {
+      padding: 0;
+      background: #040605;
+    }
+
+    #market {
+      --market-bg: #040605;
+      --market-bg-2: #070b09;
+      --market-panel: #09100c;
+      --market-panel-2: #0c1510;
+      --market-line: #223128;
+      --market-line-soft: rgba(161, 196, 171, .16);
+      --market-text: #e7efe9;
+      --market-muted: #99a99e;
+      --market-dim: #6b7b70;
+      --market-green: #46ff7e;
+      --market-green-dim: #1a7f43;
+      --market-red: #ff3b30;
+      --market-cyan: #82d7ee;
+      --market-gold: #ffc21a;
+      --market-violet: #c879ff;
+      --market-silver: #c7dde5;
+      --market-mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", Consolas, "Liberation Mono", monospace;
+      --market-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --market-shell: 1280px;
+      --market-gutter: clamp(16px, 4.2vw, 44px);
+      --market-chrome: calc(58px + env(safe-area-inset-top, 0px) + 36px);
+      position: relative;
+      isolation: isolate;
+      width: 100%;
+      min-height: 100%;
+      padding: 0;
+      overflow-x: hidden;
+      scroll-padding-top: calc(64px + env(safe-area-inset-top, 0px));
+      scrollbar-color: var(--market-line) transparent;
+      scrollbar-width: thin;
+      color-scheme: dark;
+      color: var(--market-text);
+      background:
+        radial-gradient(110% 70% at 92% 2%, rgba(70, 255, 126, .07), transparent 62%),
+        radial-gradient(80% 50% at 0% 18%, rgba(130, 215, 238, .055), transparent 64%),
+        repeating-linear-gradient(0deg, rgba(255, 255, 255, .018) 0 1px, transparent 1px 4px),
+        var(--market-bg);
+      font-family: var(--market-mono);
+      -webkit-text-size-adjust: 100%;
+    }
+
+    #market * { box-sizing: border-box; }
+    #market [hidden] { display: none !important; }
+    #market a { color: inherit; }
+    #market button { font-family: var(--market-mono); }
+    #market ::selection { background: var(--market-green); color: #041007; }
+    #market :focus-visible {
+      outline: 2px solid var(--market-green);
+      outline-offset: 3px;
+    }
+
+    #market::-webkit-scrollbar { width: 6px; }
+    #market::-webkit-scrollbar-track { background: transparent; }
+    #market::-webkit-scrollbar-thumb { background: var(--market-line); }
+
+    .market-skip {
+      position: fixed;
+      top: calc(8px + env(safe-area-inset-top, 0px));
+      left: 8px;
+      z-index: 90;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+      background: var(--market-green);
+      color: #041007;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+    .market-skip:focus {
+      width: auto;
+      height: auto;
+      min-height: 44px;
+      padding: 12px 16px;
+      overflow: visible;
+      clip-path: none;
+    }
+    .market-skip:focus-visible { outline-color: var(--market-text); }
+
+    .market-masthead {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: calc(10px + env(safe-area-inset-top, 0px)) var(--market-gutter) 10px;
+      border-bottom: 1px solid var(--market-line);
+      background: #040605;
+    }
+    .market-masthead-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      width: 100%;
+      max-width: var(--market-shell);
+      min-height: 38px;
+      margin-inline: auto;
+    }
+    .market-brand {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+      gap: 9px;
+    }
+    .market-brand-mark {
+      width: 26px;
+      height: 26px;
+      flex: 0 0 auto;
+      color: var(--market-green);
+      filter: drop-shadow(0 0 8px rgba(70, 255, 126, .3));
+    }
+    .market-brand-word {
+      color: var(--market-text);
+      font-size: clamp(10px, 2.9vw, 14px);
+      font-weight: 700;
+      letter-spacing: .08em;
+      white-space: nowrap;
+    }
+    .market-brand-sep {
+      margin: 0 1px;
+      color: var(--market-green);
+    }
+    .market-masthead-actions {
+      display: flex;
+      align-items: center;
+      flex: 0 0 auto;
+      gap: 8px;
+    }
+    .market-prop-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 4px 7px;
+      border: 1px solid rgba(255, 59, 48, .55);
+      background: rgba(255, 59, 48, .07);
+      color: #ff7b70;
+      font-size: clamp(7px, 2.2vw, 10px);
+      font-weight: 700;
+      letter-spacing: .1em;
+      white-space: nowrap;
+    }
+    .market-menu-toggle {
+      position: relative;
+      display: grid;
+      width: 44px;
+      height: 44px;
+      min-height: 44px;
+      padding: 0;
+      place-items: center;
+      border: 1px solid var(--market-line);
+      border-radius: 0;
+      background: rgba(255, 255, 255, .025);
+      color: var(--market-text);
+      cursor: pointer;
+    }
+    .market-menu-toggle:active { background: rgba(70, 255, 126, .12); }
+    .market-menu-line {
+      position: absolute;
+      right: 12px;
+      left: 12px;
+      height: 1px;
+      background: currentColor;
+    }
+    .market-menu-line:nth-child(1) { top: 15px; }
+    .market-menu-line:nth-child(2) { top: 21px; }
+    .market-menu-line:nth-child(3) { top: 27px; }
+    .market-menu-toggle[aria-expanded="true"] .market-menu-line:nth-child(1) {
+      top: 21px;
+      transform: rotate(45deg);
+    }
+    .market-menu-toggle[aria-expanded="true"] .market-menu-line:nth-child(2) { opacity: 0; }
+    .market-menu-toggle[aria-expanded="true"] .market-menu-line:nth-child(3) {
+      top: 21px;
+      transform: rotate(-45deg);
+    }
+
+    .market-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      left: 0;
+      z-index: 60;
+      padding: 6px var(--market-gutter) 14px;
+      border-bottom: 1px solid var(--market-line);
+      background: #060a08;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, .5);
+    }
+    .market-menu a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 48px;
+      border-bottom: 1px solid var(--market-line-soft);
+      color: var(--market-text);
+      font-size: 12px;
+      letter-spacing: .12em;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+    .market-menu a:last-child { border-bottom: 0; }
+    .market-menu a::after {
+      content: "→";
+      color: var(--market-green);
+      font-size: 14px;
+    }
+
+    .market-notice {
+      display: block;
+      padding: 9px var(--market-gutter);
+      border-bottom: 1px solid rgba(255, 59, 48, .55);
+      background:
+        repeating-linear-gradient(90deg, transparent 0 7px, rgba(255, 59, 48, .06) 7px 8px),
+        linear-gradient(90deg, rgba(255, 59, 48, .12), rgba(255, 59, 48, .035) 45%, rgba(255, 59, 48, .12));
+      color: #ff7b72;
+      font-size: clamp(8px, 2.5vw, 11px);
+      letter-spacing: .1em;
+      line-height: 1.5;
+      text-align: center;
+      text-transform: uppercase;
+    }
+    .market-notice-text::before,
+    .market-notice-text::after {
+      color: var(--market-red);
+      font-weight: 700;
+      letter-spacing: .12em;
+    }
+    .market-notice-text::before { content: "/// "; }
+    .market-notice-text::after { content: " ///"; }
+
+    .market-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      border-bottom: 1px solid var(--market-line);
+      background: linear-gradient(180deg, rgba(9, 16, 12, .6), transparent 42%);
+    }
+    .market-hero-media {
+      position: relative;
+      min-height: 230px;
+      margin: 0;
+      overflow: hidden;
+      border-bottom: 1px solid var(--market-line);
+      background: #020504;
+    }
+    .market-hero-art {
+      display: block;
+      width: 100%;
+      height: 100%;
+      min-height: 230px;
+    }
+    .market-hero-media::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(90deg, rgba(4, 6, 5, .16), transparent 42%, rgba(4, 6, 5, .58));
+      pointer-events: none;
+    }
+    .market-scan {
+      position: absolute;
+      top: -45%;
+      right: 0;
+      left: 0;
+      z-index: 2;
+      height: 38%;
+      background: linear-gradient(180deg, transparent, rgba(70, 255, 126, .16) 35%, rgba(130, 215, 238, .12) 55%, transparent);
+      opacity: 0;
+      transform: translate3d(0, -20%, 0);
+      animation: market-scan 12s linear infinite;
+      mix-blend-mode: screen;
+      pointer-events: none;
+      will-change: transform, opacity;
+    }
+    @keyframes market-scan {
+      0% { transform: translate3d(0, -80%, 0); opacity: 0; }
+      8% { opacity: .55; }
+      45% { opacity: .3; }
+      92% { opacity: .55; }
+      100% { transform: translate3d(0, 380%, 0); opacity: 0; }
+    }
+    .market-hero-corner {
+      position: absolute;
+      z-index: 3;
+      width: 18px;
+      height: 18px;
+      border-color: rgba(70, 255, 126, .6);
+      border-style: solid;
+      pointer-events: none;
+    }
+    .market-hero-corner--tl { top: 12px; left: 12px; border-width: 1px 0 0 1px; }
+    .market-hero-corner--tr { top: 12px; right: 12px; border-width: 1px 1px 0 0; }
+    .market-hero-corner--bl { bottom: 12px; left: 12px; border-width: 0 0 1px 1px; }
+    .market-hero-corner--br { right: 12px; bottom: 12px; border-width: 0 1px 1px 0; }
+    .market-hero-caption {
+      position: absolute;
+      bottom: 14px;
+      left: 18px;
+      z-index: 3;
+      color: var(--market-dim);
+      font-size: 8px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .market-hero-copy {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 15px;
+      min-width: 0;
+      padding: clamp(24px, 5vw, 58px) var(--market-gutter);
+    }
+    .market-kicker {
+      margin: 0;
+      color: var(--market-green);
+      font-size: 10px;
+      letter-spacing: .16em;
+      line-height: 1.5;
+      text-transform: uppercase;
+    }
+    .market-kicker span {
+      padding: 0 2px;
+      color: var(--market-dim);
+    }
+    #market h1 {
+      max-width: 9ch;
+      margin: 0;
+      color: var(--market-text);
+      font-family: var(--market-sans);
+      font-size: clamp(3rem, 10.5vw, 6.5rem);
+      font-style: italic;
+      font-weight: 900;
+      line-height: .86;
+      letter-spacing: -.055em;
+      text-transform: uppercase;
+      text-wrap: balance;
+      text-shadow: 2px 0 rgba(255, 59, 48, .55), -1px 0 rgba(130, 215, 238, .35);
+    }
+    #market h1 span { color: #ffffff; }
+    .market-subtitle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+      color: var(--market-green);
+      font-size: clamp(10px, 2.8vw, 14px);
+      font-weight: 700;
+      letter-spacing: .16em;
+      line-height: 1.4;
+      text-transform: uppercase;
+    }
+    .market-subtitle::before {
+      content: ">>";
+      color: var(--market-red);
+      letter-spacing: -.06em;
+    }
+    .market-hero-note {
+      max-width: 36ch;
+      margin: 0;
+      color: var(--market-muted);
+      font-size: clamp(11px, 2.8vw, 13px);
+      line-height: 1.65;
+    }
+    .market-hero-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      min-width: 200px;
+      min-height: 48px;
+      padding: 10px 16px;
+      border: 1px solid var(--market-green);
+      background: rgba(70, 255, 126, .04);
+      color: var(--market-green);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+    .market-hero-cta:active { background: rgba(70, 255, 126, .16); }
+
+    .market-section {
+      padding: clamp(38px, 7vw, 72px) var(--market-gutter);
+      border-bottom: 1px solid var(--market-line);
+    }
+    .market-section-inner,
+    .market-panel-inner,
+    .market-footer-inner {
+      width: 100%;
+      max-width: var(--market-shell);
+      margin-inline: auto;
+    }
+    .market-section-bar {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--market-line);
+    }
+    .market-section h2,
+    .market-panel h2 {
+      margin: 5px 0 0;
+      color: var(--market-text);
+      font-family: var(--market-sans);
+      font-size: clamp(1.8rem, 5vw, 3.2rem);
+      font-weight: 850;
+      line-height: .95;
+      letter-spacing: -.04em;
+      text-transform: uppercase;
+    }
+    .market-package-count {
+      margin: 0;
+      color: var(--market-dim);
+      font-size: 9px;
+      letter-spacing: .14em;
+      line-height: 1.5;
+      text-align: right;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .market-package-count strong {
+      display: block;
+      color: var(--market-green);
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+    .market-filter-bar {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .market-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .market-filter {
+      min-height: 44px;
+      padding: 10px 12px;
+      border: 1px solid transparent;
+      border-bottom-color: var(--market-line);
+      border-radius: 0;
+      background: transparent;
+      color: var(--market-muted);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      line-height: 1;
+      text-align: center;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .market-filter::before { content: "["; color: var(--market-dim); margin-right: 5px; }
+    .market-filter::after { content: "]"; color: var(--market-dim); margin-left: 5px; }
+    .market-filter[aria-pressed="true"] {
+      border-color: var(--market-line);
+      background: rgba(70, 255, 126, .06);
+      box-shadow: inset 0 -2px 0 var(--market-green);
+      color: var(--market-green);
+    }
+    .market-filter[aria-pressed="true"]::before,
+    .market-filter[aria-pressed="true"]::after { color: var(--market-green); }
+    .market-filter-status {
+      min-height: 16px;
+      margin: 0;
+      color: var(--market-dim);
+      font-size: 9px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .market-package-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .market-card {
+      --tier: var(--market-silver);
+      --tier-glow: rgba(199, 221, 229, .09);
+      position: relative;
+      display: grid;
+      grid-template-columns: 56px minmax(0, 1fr);
+      align-items: center;
+      gap: 12px 14px;
+      padding: 15px 14px 14px;
+      border: 1px solid var(--market-line);
+      background:
+        linear-gradient(100deg, var(--tier-glow), transparent 48%),
+        rgba(6, 11, 8, .72);
+    }
+    .market-card--silver { --tier: var(--market-silver); --tier-glow: rgba(199, 221, 229, .09); }
+    .market-card--gold { --tier: var(--market-gold); --tier-glow: rgba(255, 194, 26, .08); }
+    .market-card--platinum { --tier: var(--market-violet); --tier-glow: rgba(200, 121, 255, .09); }
+    .market-card::before {
+      content: "";
+      position: absolute;
+      top: -1px;
+      bottom: -1px;
+      left: -1px;
+      width: 3px;
+      background: var(--tier);
+    }
+    .market-card-icon {
+      display: grid;
+      width: 56px;
+      height: 56px;
+      place-items: center;
+      border: 1px solid var(--market-line);
+      background: var(--tier-glow);
+      color: var(--tier);
+    }
+    .market-card-icon svg { width: 30px; height: 30px; }
+    .market-card-copy { min-width: 0; }
+    .market-card-index {
+      margin: 0 0 4px;
+      color: var(--market-dim);
+      font-size: 9px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    .market-card-title {
+      margin: 0;
+      color: var(--tier);
+      font-family: var(--market-sans);
+      font-size: clamp(1.45rem, 4vw, 2.1rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -.02em;
+      text-transform: uppercase;
+    }
+    .market-card-desc {
+      margin: 6px 0 0;
+      color: var(--market-muted);
+      font-size: clamp(11px, 2.6vw, 13px);
+      line-height: 1.5;
+    }
+    .market-card-buy {
+      display: flex;
+      grid-column: 1 / -1;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--market-line-soft);
+    }
+    .market-card-price {
+      margin: 0;
+      color: var(--market-text);
+      font-size: clamp(1.5rem, 5vw, 2.2rem);
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -.06em;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+    .market-access {
+      min-width: 44px;
+      min-height: 44px;
+      padding: 10px 13px;
+      border: 1px solid var(--tier);
+      border-radius: 0;
+      background: transparent;
+      color: var(--tier);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      line-height: 1.2;
+      text-align: center;
+      text-transform: uppercase;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .market-access:active { background: var(--tier-glow); }
+
+    .market-lower {
+      display: grid;
+      gap: 1px;
+      border-bottom: 1px solid var(--market-line);
+      background: var(--market-line);
+    }
+    .market-panel {
+      padding: clamp(26px, 5vw, 46px) var(--market-gutter);
+      background: var(--market-bg-2);
+    }
+    .market-panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--market-line-soft);
+    }
+    .market-panel h2 {
+      margin: 0;
+      color: var(--market-green);
+      font-family: var(--market-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .14em;
+      line-height: 1.4;
+    }
+    .market-status-dot {
+      width: 8px;
+      height: 8px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: var(--market-green);
+      box-shadow: 0 0 10px rgba(70, 255, 126, .65);
+    }
+    .market-panel-index {
+      color: var(--market-dim);
+      font-size: 9px;
+      letter-spacing: .14em;
+    }
+    .market-status-list { margin: 14px 0 0; }
+    .market-status-list div {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--market-line-soft);
+    }
+    .market-status-list div:last-child { border-bottom: 0; }
+    .market-status-list dt {
+      color: var(--market-dim);
+      font-size: 10px;
+      letter-spacing: .1em;
+    }
+    .market-status-list dd {
+      margin: 0;
+      color: var(--market-text);
+      font-size: 12px;
+      text-align: right;
+    }
+    .market-notice-copy {
+      max-width: 48ch;
+      margin: 18px 0 0;
+      color: var(--market-text);
+      font-size: clamp(13px, 2.8vw, 15px);
+      line-height: 1.7;
+    }
+    .market-notice-foot {
+      margin: 12px 0 0;
+      color: var(--market-dim);
+      font-size: 9px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .market-footer {
+      padding: 30px var(--market-gutter) calc(24px + env(safe-area-inset-bottom, 0px));
+      border-top: 1px solid var(--market-line);
+      background: #030504;
+    }
+    .market-footer-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+    .market-mirror-block { min-width: 0; }
+    .market-footer-label {
+      margin: 0 0 7px;
+      color: var(--market-green);
+      font-size: 10px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+    .market-mirror-address {
+      display: block;
+      color: var(--market-text);
+      font-family: var(--market-mono);
+      font-size: clamp(9.5px, 2.45vw, 14px);
+      letter-spacing: 0;
+      line-height: 1.75;
+      overflow-wrap: break-word;
+      word-break: normal;
+    }
+    .market-mirror-note {
+      margin: 6px 0 0;
+      color: var(--market-dim);
+      font-size: 9px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .market-footer-meta {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 8px 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--market-line-soft);
+      color: var(--market-dim);
+      font-size: 9px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .market-footer-prop {
+      padding: 4px 6px;
+      border: 1px solid rgba(255, 59, 48, .55);
+      color: #ff7b70;
+    }
+
+    .market-dialog {
+      width: min(420px, calc(100vw - 32px));
+      max-width: none;
+      margin: auto;
+      padding: 0;
+      border: 1px solid var(--market-green);
+      border-radius: 0;
+      background: #070c09;
+      color: var(--market-text);
+      box-shadow: 0 0 0 1px rgba(70, 255, 126, .14), 0 30px 80px rgba(0, 0, 0, .8);
+    }
+    .market-dialog::backdrop {
+      background: rgba(0, 0, 0, .78);
+      backdrop-filter: blur(3px);
+    }
+    .market-dialog-inner { padding: 22px; }
+    .market-dialog-kicker {
+      margin: 0 0 12px;
+      color: #ff7b70;
+      font-size: 9px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+    .market-dialog h2 {
+      margin: 0;
+      color: var(--market-text);
+      font-family: var(--market-sans);
+      font-size: clamp(1.6rem, 5vw, 2.2rem);
+      font-weight: 850;
+      line-height: .98;
+      letter-spacing: -.03em;
+      text-transform: uppercase;
+    }
+    .market-dialog p {
+      margin: 14px 0 0;
+      color: var(--market-muted);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+    .market-dialog-close {
+      width: 100%;
+      min-height: 44px;
+      margin-top: 20px;
+      padding: 11px 16px;
+      border: 1px solid var(--market-green);
+      border-radius: 0;
+      background: var(--market-green);
+      color: #041007;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-align: center;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .market-dialog-close:active { background: #baffcd; }
+
+    @media (hover: hover) and (pointer: fine) {
+      .market-hero-cta:hover,
+      .market-access:hover {
+        background: var(--market-green);
+        color: #041007;
+      }
+      .market-access:hover {
+        border-color: var(--market-green);
+      }
+      .market-filter:hover {
+        border-color: var(--market-line);
+        color: var(--market-text);
+      }
+      .market-menu-toggle:hover {
+        border-color: rgba(70, 255, 126, .5);
+      }
+      .market-menu a:hover { color: var(--market-green); }
+    }
+
+    @media (min-width: 720px) {
+      .market-hero {
+        grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr);
+        min-height: min(calc(100svh - var(--market-chrome)), 620px);
+      }
+      .market-hero-media {
+        min-height: 100%;
+        border-right: 1px solid var(--market-line);
+        border-bottom: 0;
+      }
+      .market-hero-art { height: 100%; }
+      .market-hero-copy { padding: clamp(32px, 5vw, 64px); }
+      .market-menu {
+        right: var(--market-gutter);
+        left: auto;
+        width: min(360px, calc(100vw - 2 * var(--market-gutter)));
+        padding: 8px 14px 12px;
+        border: 1px solid var(--market-line);
+      }
+      .market-package-list { gap: 14px; }
+      .market-card {
+        grid-template-columns: 68px minmax(0, 1fr) auto;
+        gap: 18px;
+        padding: 18px;
+      }
+      .market-card-buy {
+        grid-column: auto;
+        flex-direction: column;
+        align-items: flex-end;
+        padding-top: 0;
+        border-top: 0;
+      }
+      .market-lower { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+      .market-footer-inner {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 32px;
+      }
+      .market-footer-meta {
+        flex-direction: column;
+        align-items: flex-end;
+        padding-top: 0;
+        border-top: 0;
+        text-align: right;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .market-section { padding-block: clamp(52px, 6vw, 78px); }
+      .market-hero-copy { padding-inline: clamp(48px, 5vw, 88px); }
+      .market-card {
+        grid-template-columns: 84px minmax(0, 1fr) auto;
+        gap: 24px;
+        padding: 22px 24px;
+      }
+      .market-card-icon { width: 72px; height: 72px; }
+      .market-card-icon svg { width: 36px; height: 36px; }
+    }
+
+    @media (min-width: 720px) and (max-height: 600px) {
+      #market h1 { font-size: clamp(2.4rem, 7vw, 3.4rem); }
+      .market-hero-copy { gap: 10px; padding-block: 24px; }
+      .market-hero-note { font-size: 11px; }
+    }
+
+    @media (max-width: 359px) {
+      .market-masthead-row { gap: 8px; }
+      .market-brand { gap: 7px; }
+      .market-brand-word { font-size: 9px; letter-spacing: .04em; }
+      .market-masthead-actions { gap: 6px; }
+      .market-prop-chip {
+        padding: 3px 5px;
+        font-size: 6px;
+        letter-spacing: .06em;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .market-scan {
+        animation: none;
+        opacity: .24;
+        transform: translate3d(0, 45%, 0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main id="app">
+    <section class="screen active" id="market" aria-labelledby="market-title">
+      <a class="market-skip" href="#market-packages">Skip to packages</a>
+
+      <header class="market-masthead">
+        <div class="market-masthead-row">
+          <div class="market-brand">
+            <svg class="market-brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+              <path d="M4 6l12 20L28 6" fill="none" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M9 6l7 12 7-12" fill="none" stroke="currentColor" stroke-width="1"/>
+              <path d="M16 2v28M2 16h28" fill="none" stroke="currentColor" stroke-width=".6" opacity=".35"/>
+            </svg>
+            <span class="market-brand-word">IDENTITY<span class="market-brand-sep">//</span>EXCHANGE</span>
+          </div>
+          <div class="market-masthead-actions">
+            <span class="market-prop-chip">PROP — FICTIONAL</span>
+            <button class="market-menu-toggle" id="market-menu-toggle" type="button" aria-expanded="false" aria-controls="market-menu" aria-label="Open menu">
+              <span class="market-menu-line" aria-hidden="true"></span>
+              <span class="market-menu-line" aria-hidden="true"></span>
+              <span class="market-menu-line" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+        <nav class="market-menu" id="market-menu" aria-label="Storefront sections" hidden>
+          <a href="#market-packages">Packages</a>
+          <a href="#market-status">Prop status</a>
+          <a href="#market-mirror">Mirror</a>
+        </nav>
+      </header>
+
+      <div class="market-notice" role="note">
+        <span class="market-notice-text">PROP — FICTIONAL · NO REAL SERVICE · NO REQUESTS SENT</span>
+      </div>
+
+      <section class="market-hero" aria-labelledby="market-title">
+        <figure class="market-hero-media">
+          <svg class="market-hero-art" viewBox="0 0 720 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+            <defs>
+              <pattern id="market-hero-grid" width="44" height="44" patternUnits="userSpaceOnUse">
+                <path d="M44 0H0v44" fill="none" stroke="#12332a" stroke-width="1"/>
+              </pattern>
+              <radialGradient id="market-hero-glow" cx="50%" cy="50%" r="50%">
+                <stop offset="0" stop-color="#0d5c4a" stop-opacity=".55"/>
+                <stop offset="1" stop-color="#0d5c4a" stop-opacity="0"/>
+              </radialGradient>
+              <pattern id="market-hero-lines" width="4" height="4" patternUnits="userSpaceOnUse">
+                <rect width="4" height="1" fill="#c7f7df" opacity=".06"/>
+              </pattern>
+            </defs>
+            <rect width="720" height="520" fill="#020504"/>
+            <rect width="720" height="520" fill="url(#market-hero-grid)" opacity=".7"/>
+            <ellipse cx="258" cy="250" rx="260" ry="340" fill="url(#market-hero-glow)"/>
+            <rect x="40" y="60" width="1" height="400" fill="#2b7a64" opacity=".6"/>
+            <rect x="656" y="60" width="1" height="400" fill="#2b7a64" opacity=".3"/>
+            <g fill="none" stroke="#2b7a64" opacity=".45">
+              <path d="M60 92h44M60 92v44"/>
+              <path d="M660 92h-44M660 92v44"/>
+              <path d="M60 428h44M60 428v-44"/>
+              <path d="M660 428h-44M660 428v-44"/>
+            </g>
+            <g>
+              <path d="M360 108c-58 0-102 44-102 102v34c0 30-14 50-36 72-38 36-58 84-58 138v66h392v-66c0-54-20-102-58-138-22-22-36-42-36-72v-34c0-58-44-102-102-102z" fill="#030705" stroke="#1c5a4c" stroke-width="2"/>
+              <path d="M360 136c-40 0-72 30-72 70 0 22 10 34 24 46 14 12 20 26 20 42v48h56v-48c0-16 6-30 20-42 14-12 24-24 24-46 0-40-32-70-72-70z" fill="#08110e"/>
+              <path d="M376 220c10 8 16 18 16 30 0 18-14 26-26 36" fill="none" stroke="#2a7d69" stroke-width="2"/>
+              <path d="M312 250c-8 16-8 34 2 52" fill="none" stroke="#2a7d69" stroke-width="1.5" opacity=".7"/>
+            </g>
+            <rect width="720" height="520" fill="url(#market-hero-lines)" opacity=".55"/>
+            <rect x="560" y="230" width="1" height="80" fill="#46ff7e" opacity=".4"/>
+          </svg>
+          <span class="market-scan" aria-hidden="true"></span>
+          <span class="market-hero-corner market-hero-corner--tl" aria-hidden="true"></span>
+          <span class="market-hero-corner market-hero-corner--tr" aria-hidden="true"></span>
+          <span class="market-hero-corner market-hero-corner--bl" aria-hidden="true"></span>
+          <span class="market-hero-corner market-hero-corner--br" aria-hidden="true"></span>
+          <figcaption class="market-hero-caption">Visual placeholder · hero clearance pending</figcaption>
+        </figure>
+        <div class="market-hero-copy">
+          <p class="market-kicker">PROP — FICTIONAL <span>/</span> SCENES 27 · 41</p>
+          <h1 id="market-title">BUY ID<br><span>TODAY!</span></h1>
+          <p class="market-subtitle">BVN/NIN PACKAGE</p>
+          <p class="market-hero-note">Fictional storefront. Display only. No real identity service exists.</p>
+          <a class="market-hero-cta" href="#market-packages">View packages <span aria-hidden="true">↓</span></a>
+        </div>
+      </section>
+
+      <section class="market-section" id="market-packages" tabindex="-1" data-menu-target aria-labelledby="market-packages-title">
+        <div class="market-section-inner">
+          <div class="market-section-bar">
+            <div>
+              <p class="market-kicker">01 / Packages</p>
+              <h2 id="market-packages-title">Packages</h2>
+            </div>
+            <p class="market-package-count"><strong>03</strong>Fictional tiers</p>
+          </div>
+
+          <div class="market-filter-bar">
+            <div class="market-filters" role="group" aria-label="Filter packages by tier">
+              <button class="market-filter" type="button" data-filter="all" aria-pressed="true" aria-label="All">All</button>
+              <button class="market-filter" type="button" data-filter="silver" aria-pressed="false" aria-label="Silver">Silver</button>
+              <button class="market-filter" type="button" data-filter="gold" aria-pressed="false" aria-label="Gold">Gold</button>
+              <button class="market-filter" type="button" data-filter="platinum" aria-pressed="false" aria-label="Platinum">Platinum</button>
+            </div>
+            <p class="market-filter-status" id="market-filter-status" role="status" aria-live="polite">Showing all 3 packages.</p>
+          </div>
+
+          <div class="market-package-list">
+            <article class="market-card market-card--silver" data-tier="silver" aria-labelledby="market-silver-title">
+              <div class="market-card-icon" aria-hidden="true">
+                <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" focusable="false">
+                  <circle cx="11" cy="11" r="5"/>
+                  <path d="M15 15l11 11M22 22l3-3M19 19l3-3"/>
+                </svg>
+              </div>
+              <div class="market-card-copy">
+                <p class="market-card-index">01 / 03</p>
+                <h3 class="market-card-title" id="market-silver-title">SILVER</h3>
+                <p class="market-card-desc">Replace a Dead Person</p>
+              </div>
+              <div class="market-card-buy">
+                <p class="market-card-price">$5,000</p>
+                <button class="market-access" type="button" data-access="silver" aria-label="Request access — Silver package">Request access</button>
+              </div>
+            </article>
+
+            <article class="market-card market-card--gold" data-tier="gold" aria-labelledby="market-gold-title">
+              <div class="market-card-icon" aria-hidden="true">
+                <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" focusable="false">
+                  <path d="M5 24h22M6 11l5 6 5-9 5 9 5-6 2 13H4z"/>
+                </svg>
+              </div>
+              <div class="market-card-copy">
+                <p class="market-card-index">02 / 03</p>
+                <h3 class="market-card-title" id="market-gold-title">GOLD</h3>
+                <p class="market-card-desc">a new one created for you</p>
+              </div>
+              <div class="market-card-buy">
+                <p class="market-card-price">$15,000</p>
+                <button class="market-access" type="button" data-access="gold" aria-label="Request access — Gold package">Request access</button>
+              </div>
+            </article>
+
+            <article class="market-card market-card--platinum" data-tier="platinum" aria-labelledby="market-platinum-title">
+              <div class="market-card-icon" aria-hidden="true">
+                <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" focusable="false">
+                  <path d="M16 3l11 9-11 17L5 12zM5 12h22M16 3l-5 9 5 17 5-17"/>
+                </svg>
+              </div>
+              <div class="market-card-copy">
+                <p class="market-card-index">03 / 03</p>
+                <h3 class="market-card-title" id="market-platinum-title">PLATINUM</h3>
+                <p class="market-card-desc">delete old one and create new one</p>
+              </div>
+              <div class="market-card-buy">
+                <p class="market-card-price">$50,000</p>
+                <button class="market-access" type="button" data-access="platinum" aria-label="Request access — Platinum package">Request access</button>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="market-lower" aria-label="Prop information">
+        <section class="market-panel" id="market-status" tabindex="-1" data-menu-target aria-labelledby="market-status-title">
+          <div class="market-panel-inner">
+            <div class="market-panel-head">
+              <h2 id="market-status-title">Prop status</h2>
+              <span class="market-status-dot" aria-hidden="true"></span>
+            </div>
+            <dl class="market-status-list">
+              <div><dt>Page</dt><dd>Scenes 27 / 41</dd></div>
+              <div><dt>Mode</dt><dd>Static prop</dd></div>
+              <div><dt>Requests</dt><dd>None sent</dd></div>
+              <div><dt>Network</dt><dd>Local only</dd></div>
+            </dl>
+          </div>
+        </section>
+
+        <section class="market-panel" aria-labelledby="market-notice-title">
+          <div class="market-panel-inner">
+            <div class="market-panel-head">
+              <h2 id="market-notice-title">Prop notice</h2>
+              <span class="market-panel-index" aria-hidden="true">A / 01</span>
+            </div>
+            <p class="market-notice-copy">This is a fictional film prop. No identity data is collected. No request leaves this page.</p>
+            <p class="market-notice-foot">All controls are local simulations.</p>
+          </div>
+        </section>
+      </section>
+
+      <footer class="market-footer" id="market-mirror" tabindex="-1" data-menu-target>
+        <div class="market-footer-inner">
+          <div class="market-mirror-block">
+            <p class="market-footer-label">Mirror</p>
+            <!-- A v3 address ends in d because the final base32 character encodes version byte 0x03. Prop text only. -->
+            <code class="market-mirror-address" data-address="abcdefghijklmnopqrstuvwxyz234567abcdefghijklmnopqrstuvwd">abcdefghijklmnopqrstuvwxyz23<wbr>4567abcdefghijklmnopqrstuvwd.onion</code>
+            <p class="market-mirror-note">Text only. Not a live address.</p>
+          </div>
+          <div class="market-footer-meta">
+            <span class="market-footer-prop">PROP — FICTIONAL</span>
+            <span>Scenes 27 · 41</span>
+          </div>
+        </div>
+      </footer>
+
+      <dialog class="market-dialog" id="market-dialog" aria-labelledby="market-dialog-title" aria-describedby="market-dialog-desc">
+        <div class="market-dialog-inner">
+          <p class="market-dialog-kicker">PROP — FICTIONAL</p>
+          <h2 id="market-dialog-title">Simulation notice</h2>
+          <p id="market-dialog-desc">Prop simulation only. No request was sent.</p>
+          <button class="market-dialog-close" type="button" data-dialog-close>Close</button>
+        </div>
+      </dialog>
+    </section>
+
+    <section class="screen" id="instagram" aria-label="Magnificent's Instagram page">
+      <header class="social-head"><span>Instagram</span><button type="button" data-screen="market">Back</button></header>
+      <div class="profile">
+        <div class="avatar" aria-hidden="true"></div>
+        <div class="profile-copy"><strong>Magnificent</strong>Posts of him partying and living the good life.</div>
+      </div>
+      <div class="posts" aria-label="Party photographs"><div class="post"></div><div class="post"></div><div class="post"></div><div class="post"></div><div class="post"></div><div class="post"></div></div>
+      <nav class="scene-nav" aria-label="Scene pages">
+        <button type="button" data-screen="foundation">Bartholomew Foundation</button>
+      </nav>
+    </section>
+
+    <section class="screen foundation" id="foundation" aria-labelledby="foundation-name">
+      <header class="foundation-masthead">
+        <div class="foundation-shell">
+          <div class="foundation-identity">
+            <p class="foundation-name" id="foundation-name">Bartholomew Foundation</p>
+            <p class="foundation-sign">Reform · Mentor · Equip · Reintegrate</p>
+          </div>
+          <button class="foundation-back" type="button" data-screen="instagram" aria-label="Back to Instagram">Back</button>
+        </div>
+      </header>
+
+      <div class="foundation-shell">
+        <div class="foundation-hero">
+          <div class="foundation-hero-copy">
+            <h1>Learn a trade.</h1>
+          </div>
+          <figure class="foundation-hero-media">
+            <!-- The source is wider than the crop box; sizes describes the cover-painted width. -->
+            <img src="foundation-hero.jpg"
+                 srcset="foundation-hero-900.jpg 900w, foundation-hero.jpg 1800w"
+                 sizes="(min-width: 1240px) 1140px, (min-width: 900px) 92vw, (min-width: 600px) 137vw, 190vw"
+                 width="1800" height="666"
+                 alt="A group of young adults outdoors around an open laptop, with palm trees and a waterfront bridge behind them."
+                 fetchpriority="high" decoding="async">
+          </figure>
+        </div>
+
+        <div class="foundation-details">
+          <section aria-labelledby="foundation-trades-title">
+            <h2 class="foundation-section-title" id="foundation-trades-title">Trades</h2>
+            <ul class="foundation-trades">
+              <li>Carpentry</li>
+              <li>Electrical Work</li>
+              <li>Agricultural Extension</li>
+            </ul>
+          </section>
+          <section class="foundation-terms" aria-labelledby="foundation-terms-title">
+            <h2 class="foundation-section-title" id="foundation-terms-title">Programme</h2>
+            <p class="foundation-terms-line">6 months. N80k per month.</p>
+          </section>
+        </div>
+
+        <div class="foundation-close">
+          <p class="foundation-statement">Rebuild your life. Become a productive member of society once again.</p>
+          <button class="foundation-apply" type="button">Apply now</button>
+        </div>
+
+        <footer class="foundation-footer">
+          <p>Bartholomew Foundation</p>
+          <p>Reform · Mentor · Equip · Reintegrate</p>
+        </footer>
+      </div>
+    </section>
+  </main>
+  <script>
+    const app = document.getElementById("app");
+    document.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-screen]");
+      if (!button) return;
+      const next = document.getElementById(button.dataset.screen);
+      if (!next) return;
+      document.querySelectorAll(".screen").forEach((screen) => screen.classList.remove("active"));
+      next.classList.add("active");
+      app.classList.toggle("foundation-open", next.id === "foundation");
+      if (next.id === "foundation") next.scrollTop = 0;
+    });
+
+    (() => {
+      const market = document.getElementById("market");
+      if (!market) return;
+
+      const menuToggle = document.getElementById("market-menu-toggle");
+      const menu = document.getElementById("market-menu");
+      const filterButtons = [...market.querySelectorAll("[data-filter]")];
+      const cards = [...market.querySelectorAll("[data-tier]")];
+      const filterStatus = document.getElementById("market-filter-status");
+      const dialog = document.getElementById("market-dialog");
+      const dialogClose = dialog?.querySelector("[data-dialog-close]");
+      const scan = market.querySelector(".market-scan");
+      let dialogTrigger = null;
+
+      function setMenuOpen(open) {
+        if (!menuToggle || !menu) return;
+        menu.hidden = !open;
+        menuToggle.setAttribute("aria-expanded", String(open));
+        menuToggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      }
+
+      function setTierFilter(filter) {
+        const next = ["all", "silver", "gold", "platinum"].includes(filter) ? filter : "all";
+        filterButtons.forEach((button) => {
+          button.setAttribute("aria-pressed", String(button.dataset.filter === next));
+        });
+        cards.forEach((card) => {
+          card.hidden = next !== "all" && card.dataset.tier !== next;
+        });
+        if (filterStatus) {
+          const labels = {
+            all: "Showing all 3 packages.",
+            silver: "Showing Silver package.",
+            gold: "Showing Gold package.",
+            platinum: "Showing Platinum package.",
+          };
+          filterStatus.textContent = labels[next];
+        }
+      }
+
+      function openPropNotice(trigger) {
+        if (!dialog) return;
+        dialogTrigger = trigger;
+        if (!dialog.open) dialog.showModal();
+      }
+
+      function closePropNotice() {
+        if (dialog?.open) dialog.close();
+      }
+
+      menuToggle?.addEventListener("click", () => {
+        setMenuOpen(menu?.hidden ?? false);
+      });
+
+      menu?.addEventListener("click", (event) => {
+        const link = event.target.closest('a[href^="#"]');
+        if (!link) return;
+        setMenuOpen(false);
+        const target = document.querySelector(link.getAttribute("href"));
+        if (target) {
+          requestAnimationFrame(() => target.focus({ preventScroll: true }));
+        }
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key !== "Escape") return;
+        if (dialog?.open) return;
+        if (menu && !menu.hidden) {
+          event.preventDefault();
+          setMenuOpen(false);
+          menuToggle?.focus();
+        }
+      });
+
+      document.addEventListener("pointerdown", (event) => {
+        if (!menu || menu.hidden) return;
+        if (menu.contains(event.target) || menuToggle?.contains(event.target)) return;
+        setMenuOpen(false);
+      });
+
+      filterButtons.forEach((button) => {
+        button.addEventListener("click", () => setTierFilter(button.dataset.filter));
+      });
+
+      market.querySelectorAll("[data-access]").forEach((button) => {
+        button.addEventListener("click", () => openPropNotice(button));
+      });
+
+      dialogClose?.addEventListener("click", closePropNotice);
+      dialog?.addEventListener("close", () => {
+        const trigger = dialogTrigger;
+        dialogTrigger = null;
+        trigger?.focus();
+      });
+      dialog?.addEventListener("click", (event) => {
+        if (event.target === dialog) closePropNotice();
+      });
+
+      function syncAmbientMotion() {
+        if (!scan) return;
+        scan.style.animationPlayState = document.hidden ? "paused" : "running";
+      }
+      document.addEventListener("visibilitychange", syncAmbientMotion);
+      syncAmbientMotion();
+    })();
+  </script>
+</body>
+</html>
