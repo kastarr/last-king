@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/darkweb/",
+      "permanent": false
+    }
+  ]
+}
