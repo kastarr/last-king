@@ -1,1 +1,0 @@
-(()=>{document.querySelectorAll("[data-demo-next]").forEach(button=>button.addEventListener("click",()=>{window.location.href="/techxtra/assessment/"}));})();
