@@ -5,5 +5,16 @@
       "destination": "/darkweb/",
       "permanent": false
     }
+  ],
+  "headers": [
+    {
+      "source": "/techxtra/:path*",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    }
   ]
 }
